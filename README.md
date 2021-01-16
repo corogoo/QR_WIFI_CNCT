@@ -1,0 +1,1 @@
+# QR_WIFI_CNCT
