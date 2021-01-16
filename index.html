@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>生成二维码</title>
+    <script src="JavaScript/jquery-1.8.3.min.js"></script>
+    <script src="JavaScript/jquery.qrcode.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            //WiFi连接演示
+            $("#wifi_btn").click(function () {
+                var txt = "WIFI:T:" + $('#WiFiType').val() + ";S:" + $('#inputWiFiName').val() + ";P:" + $('#inputWiFiPass').val() + ";;";
+                console.log(txt);
+                outputQRCod(txt, 400, 400);
+            });
+        });
+
+        //中文字符处理
+        function toUtf8(str) {
+            var out, i, len, c;
+            out = "";
+            len = str.length;
+            for (i = 0; i < len; i++) {
+                c = str.charCodeAt(i);
+                if ((c >= 0x0001) && (c <= 0x007F)) {
+                    out += str.charAt(i);
+                } else if (c > 0x07FF) {
+                    out += String.fromCharCode(0xE0 | ((c >> 12) & 0x0F));
+                    out += String.fromCharCode(0x80 | ((c >> 6) & 0x3F));
+                    out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F));
+                } else {
+                    out += String.fromCharCode(0xC0 | ((c >> 6) & 0x1F));
+                    out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F));
+                }
+            }
+            return out;
+        }
+
+        //生成二维码
+        function outputQRCod(txt, width, height) {
+            //先清空
+            $("#code").empty();
+            //中文格式转换
+            var str = toUtf8(txt);
+            //生成二维码
+            $("#code").qrcode({
+                render: "table",
+                width: width,
+                height: height,
+                text: str
+            });
+        }
+
+    </script>
+</head>
+
+<body>
+    <div id="main">
+        <div class="demo">
+            <p>请输入内容然后点击按钮生成二维码：</p>
+            <div id="code"></div>
+            <p>
+                WiFi名称：<input type="text" class="input" id="inputWiFiName" value=""><br />
+                <br />
+                WiFi密码：<input type="text" class="input" id="inputWiFiPass" value=""><br />
+                <br />
+                WiFi类型：<select id="WiFiType"><option value="WPA">WPA/WPA2</option>
+                    <option value="WEP">WEP</option>
+                    <option value="nopass">无加密</option>
+                </select>
+                <input type="button" id="wifi_btn" value="生成二维码">
+            </p>
+        </div>
+    </div>
+</body>
+</html>
